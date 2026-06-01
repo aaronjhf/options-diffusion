@@ -1,0 +1,33 @@
+# Cached proprietary data — never commit
+cache/
+*.parquet
+*.npy
+.env
+
+# Experiment outputs
+results/
+checkpoints/
+runs/
+*.png
+!docs/*.png
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Editors
+.vscode/
+.idea/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Cache symlink (points outside repo)
+cache
