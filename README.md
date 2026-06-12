@@ -19,6 +19,7 @@ options_diffusion/
 │   └── baselines.py      # CondPCABootstrap (NW), CondTCopula
 └── eval/
     ├── metrics.py        # SWD, MMD2, Frechet, KS, CorrDist, Energy
+    ├── risk.py           # VaR + expected shortfall backtests, mean reversion
     ├── experiment.py     # cross-seed driver
     └── bootstrap.py      # paired-bootstrap significance test
 ```
@@ -74,6 +75,10 @@ python scripts/plot_results.py
 python scripts/run_experiment.py --n-seeds 5
 python scripts/run_bootstrap.py --n-boot 2000
 python scripts/plot_results.py
+
+# Risk-management comparison: VaR backtests + mean-reversion strategy
+python scripts/run_risk_analysis.py
+python scripts/plot_risk_analysis.py
 ```
 
 Outputs land in `results/experiment/`, `results/bootstrap/`, and
