@@ -252,7 +252,9 @@ def fit_svi_from_quotes(ticker: str, quotes_df: pd.DataFrame, cache_dir: Path,
 
     rf_df = pd.DataFrame(all_rf, index=pd.to_datetime(trading_dates),
                          columns=SVI_RISK_FACTOR_NAMES)
-    rf_df = rf_df.ffill(limit=2).bfill(limit=1)
+    # ffill only: bfill would copy the NEXT day's surface into a missing day,
+    # leaking one day of lookahead into that day's computed change.
+    rf_df = rf_df.ffill(limit=2)
     n_before_drop = len(rf_df)
     rf_df = rf_df.dropna()
     rf_df.to_parquet(rf_cache)

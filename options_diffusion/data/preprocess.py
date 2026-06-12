@@ -170,14 +170,20 @@ def prepare_data(tickers: list[str], cache_dir: Path) -> PreparedData:
     for t in tickers:
         vix_all = vix[t].values.astype(np.float64)
         vix_cond_all = _build_vix_ewma_cond(vix_all)
-        vix_cond_train = vix_cond_all[train_idx[t]]
-        vix_cond_test = vix_cond_all[test_idx[t]]
 
-        e_short_tr, e_long_tr = _build_factor_ewma_cond(std_train[t])
-        e_short_te, e_long_te = _build_factor_ewma_cond(std_test[t])
+        # Standardize the FULL change series with train-only stats and run the
+        # (lagged) factor EWMAs over it, so test rows warm up from train/gap
+        # history instead of restarting at zero. Train rows are a prefix of
+        # the series, so their conditioning is unchanged; test EWMAs still
+        # only see data through day t-1 — no lookahead.
+        pp = preprocess[t]
+        r_all_w = np.clip(changes[t].values, pp["lo"], pp["hi"])
+        std_all = np.nan_to_num((r_all_w - pp["mu"]) / pp["sigma"], nan=0.0)
+        e_short_all, e_long_all = _build_factor_ewma_cond(std_all)
 
-        cond_ewma_train[t] = np.hstack([vix_cond_train, e_short_tr, e_long_tr])
-        cond_ewma_test[t] = np.hstack([vix_cond_test, e_short_te, e_long_te])
+        tr, te = train_idx[t], test_idx[t]
+        cond_ewma_train[t] = np.hstack([vix_cond_all[tr], e_short_all[tr], e_long_all[tr]])
+        cond_ewma_test[t] = np.hstack([vix_cond_all[te], e_short_all[te], e_long_all[te]])
 
     # ---- Stacked arrays ----
     X_train = np.vstack([std_train[t] for t in tickers])

@@ -69,6 +69,17 @@ def main():
     args.cache_dir.mkdir(parents=True, exist_ok=True)
 
     if not args.fetch:
+        if args.force_svi:
+            # Refit SVI from the cached raw quotes — no network needed. Use
+            # this after changes to svi.py to rebuild the risk-factor parquets.
+            import pandas as pd
+            for t in args.tickers:
+                quotes_path = args.cache_dir / f"{t}_raw_quotes.parquet"
+                if not quotes_path.exists():
+                    print(f"{quotes_path} missing — cannot refit SVI for {t}.")
+                    sys.exit(1)
+                fit_svi_from_quotes(t, pd.read_parquet(quotes_path),
+                                    args.cache_dir, force=True)
         sys.exit(_verify_cache(args.cache_dir, args.tickers))
 
     # Proprietary path: fetch + SVI
