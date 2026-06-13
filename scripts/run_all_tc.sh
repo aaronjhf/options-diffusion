@@ -50,7 +50,7 @@ mkdir -p results/logs
 LOG="results/logs/run_all_tc_$(date +%Y%m%d_%H%M%S).log"
 exec > >(tee -a "$LOG") 2>&1
 echo "Logging to $LOG"
-python -c "import torch; print('torch', torch.__version__, '| device:', 'cuda' if torch.cuda.is_available() else 'CPU (warning: full run will be very slow)')"
+python -c "import torch; print('torch', torch.__version__, '| device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU — WARNING: no CUDA, full run will be 10-50x slower')"
 echo "Config: N_SEEDS=$N_SEEDS N_BOOT=$N_BOOT N_SAMPLES=$N_SAMPLES BW_SCALE=$BW_SCALE EPOCHS_POOLED=$EPOCHS_POOLED"
 
 # ---- 1. Verify cache (exits nonzero with a clear message if parquets missing) ----

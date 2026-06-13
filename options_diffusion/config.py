@@ -9,6 +9,10 @@ import torch
 
 # ---- Hardware ----
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if DEVICE.type == "cuda":
+    # Ampere+ (RTX 3090 etc.): allow TF32 matmuls — faster, and the precision
+    # difference is far below the noise floor of these small MLPs.
+    torch.set_float32_matmul_precision("high")
 
 
 # ---- Tickers ----
@@ -55,8 +59,8 @@ TICKER_EMBED_DIM = 16
 
 # ---- Training hyperparameters ----
 COND_EPOCHS_SOLO = 6000           # per-ticker solo diffusion
-COND_EPOCHS_POOLED = 11000        # pooled ticker-conditioned diffusion (solo + 5000)
-BATCH_SIZE = 64
+COND_EPOCHS_POOLED = 10000        # pooled ticker-conditioned diffusion (solo + 5000)
+BATCH_SIZE = 512
 N_TIMESTEPS = 500
 HIDDEN_DIMS = (128, 256, 128)
 T_DIM = 128

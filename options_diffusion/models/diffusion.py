@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import time
 
 import numpy as np
 import torch
@@ -172,10 +173,14 @@ class ConditionalDDPM(_DDPMBase):
         sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs, eta_min=self.lr_min)
         self.net.train()
         losses = []
+        print_every = max(1, min(500, epochs // 10))
+        t_start = time.time()
 
         for ep in range(epochs):
             perm = torch.randperm(N, device=DEVICE)
-            ep_loss = 0.0; nb = 0
+            # Accumulate the epoch loss on-device: .item() per batch forces a
+            # GPU sync every step, which dominates wall-clock at this batch size.
+            ep_loss = torch.zeros((), device=DEVICE); nb = 0
             for s in range(0, N, batch_size):
                 idx = perm[s:s + batch_size]
                 x0 = X_t[idx]; cb = cond_t[idx]
@@ -191,17 +196,19 @@ class ConditionalDDPM(_DDPMBase):
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.net.parameters(), 1.0)
                 opt.step()
-                ep_loss += loss.item(); nb += 1
+                ep_loss += loss.detach(); nb += 1
             sched.step()
             with torch.no_grad():
                 net_sd = self.net.state_dict()
                 for k in self.ema_state:
                     self.ema_state[k] = self.ema_decay * self.ema_state[k] + (1 - self.ema_decay) * net_sd[k]
-            avg = ep_loss / max(nb, 1)
+            avg = (ep_loss / max(nb, 1)).item()
             losses.append(avg)
-            if verbose and (ep + 1) % max(1, epochs // 10) == 0:
+            if verbose and (ep + 1) % print_every == 0:
                 cur_lr = sched.get_last_lr()[0]
-                print(f"  epoch {ep+1:5d}/{epochs}  loss={avg:.6f}  lr={cur_lr:.2e}")
+                rate = (ep + 1) / max(time.time() - t_start, 1e-9)
+                print(f"  epoch {ep+1:5d}/{epochs}  loss={avg:.6f}  lr={cur_lr:.2e}"
+                      f"  {rate:.1f} ep/s  ETA {(epochs - ep - 1) / rate / 60:.1f} min")
         self.net.load_state_dict(self.ema_state)
         self.net.eval()
         return losses
@@ -257,10 +264,14 @@ class TickerCondDDPM(_DDPMBase):
         sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs, eta_min=self.lr_min)
         self.net.train()
         losses = []
+        print_every = max(1, min(500, epochs // 10))
+        t_start = time.time()
 
         for ep in range(epochs):
             perm = torch.randperm(N, device=DEVICE)
-            ep_loss = 0.0; nb = 0
+            # Accumulate the epoch loss on-device: .item() per batch forces a
+            # GPU sync every step, which dominates wall-clock at this batch size.
+            ep_loss = torch.zeros((), device=DEVICE); nb = 0
             for s in range(0, N, batch_size):
                 idx = perm[s:s + batch_size]
                 x0 = X_t[idx]; cb = cond_t[idx]; tk_b = tk_t[idx]
@@ -276,17 +287,19 @@ class TickerCondDDPM(_DDPMBase):
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.net.parameters(), 1.0)
                 opt.step()
-                ep_loss += loss.item(); nb += 1
+                ep_loss += loss.detach(); nb += 1
             sched.step()
             with torch.no_grad():
                 net_sd = self.net.state_dict()
                 for k in self.ema_state:
                     self.ema_state[k] = self.ema_decay * self.ema_state[k] + (1 - self.ema_decay) * net_sd[k]
-            avg = ep_loss / max(nb, 1)
+            avg = (ep_loss / max(nb, 1)).item()
             losses.append(avg)
-            if verbose and (ep + 1) % max(1, epochs // 10) == 0:
+            if verbose and (ep + 1) % print_every == 0:
                 cur_lr = sched.get_last_lr()[0]
-                print(f"  epoch {ep+1:5d}/{epochs}  loss={avg:.6f}  lr={cur_lr:.2e}")
+                rate = (ep + 1) / max(time.time() - t_start, 1e-9)
+                print(f"  epoch {ep+1:5d}/{epochs}  loss={avg:.6f}  lr={cur_lr:.2e}"
+                      f"  {rate:.1f} ep/s  ETA {(epochs - ep - 1) / rate / 60:.1f} min")
         self.net.load_state_dict(self.ema_state)
         self.net.eval()
         return losses
