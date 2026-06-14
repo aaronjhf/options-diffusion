@@ -22,6 +22,41 @@ MR_TAUS = (0.80, 0.90, 0.95)
 _EPS = 1e-12
 
 
+def inflate_spread(samples: np.ndarray, S: float) -> np.ndarray:
+    """Scale each day's ensemble around its own mean by factor S.
+
+    Variance recalibration: returns m + S*(samples - m) with m the per-day
+    ensemble mean. S > 1 widens an over-confident (under-dispersed) predictive
+    distribution; S < 1 tightens a conservative one. The per-day mean (the
+    conditional forecast) is preserved, only the spread is rescaled. Identity
+    when S == 1, so callers can apply it unconditionally.
+
+    Applying one transform here keeps VaR, ES, PIT, and the mean-reversion
+    signal mutually consistent (they all read the same recalibrated ensemble).
+    """
+    if S == 1.0:
+        return samples
+    m = samples.mean(axis=1, keepdims=True)
+    return m + S * (samples - m)
+
+
+def dispersion_ratio(samples: np.ndarray, realized: np.ndarray,
+                     valid: np.ndarray) -> float:
+    """Inflation factor that would calibrate the ensemble spread.
+
+    Std of the standardized residual z = (realized - ensemble_mean)/ensemble_std
+    over valid days. A perfectly calibrated ensemble gives ~1; > 1 means the
+    predictive distribution is too narrow (realized scatters wider than the
+    ensemble claims) and should be inflated by roughly this factor.
+    """
+    m = samples.mean(axis=1)
+    sd = samples.std(axis=1)
+    z = (realized - m) / np.where(sd < _EPS, np.nan, sd)
+    z = z[valid]
+    z = z[np.isfinite(z)]
+    return float(np.std(z)) if len(z) else np.nan
+
+
 def var_backtest(samples: np.ndarray, realized: np.ndarray, valid: np.ndarray,
                  alpha: float, tail: str) -> dict:
     """Backtest VaR at level `alpha` for one tail ('lower' or 'upper').

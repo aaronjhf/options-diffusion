@@ -20,6 +20,14 @@ corrupts exactly the tail behaviour VaR measures. Invalid (stale-fit) days are
 excluded from scoring. An unconditional-historical baseline (`uncond_hist`,
 resampling train rows) is included so the value of conditioning is visible.
 
+Variance recalibration (--var-scale-mode): the conditioned diffusion is
+over-confident — its per-day predictive spread is far too tight relative to the
+residual, so VaR violation rates run well above nominal. `auto` estimates a
+per-method inflation factor on the train set (no test leakage) and rescales each
+day's spread about its mean before scoring; `manual` applies a fixed --var-scale
+(~4 calibrates TC-Diff). Use scripts/diagnose_var_scale.py to read the factor
+off an existing series.parquet first. Default `off` reproduces prior behavior.
+
 Caveat inherited from the package: the conditioning vector includes SAME-DAY
 VIX, so all methods see contemporaneous market vol. Comparisons across methods
 are fair, but absolute numbers are not pure out-of-sample forecasts, and the
@@ -57,20 +65,28 @@ from options_diffusion.eval.experiment import (
     _train_pooled_diffusion, _train_solo_diffusion, set_global_seed,
 )
 from options_diffusion.eval.risk import (
-    MR_TAUS, VAR_ALPHAS, mean_reversion_eval, pit_from_ensemble, var_backtest,
+    MR_TAUS, VAR_ALPHAS, inflate_spread, mean_reversion_eval,
+    pit_from_ensemble, var_backtest,
 )
 from options_diffusion.models.baselines import CondPCABootstrap, CondTCopula
 
 RISK_METHODS = ["solo_diff", "tc_diff", "solo_nw", "t_copula", "uncond_hist"]
 SERIES_QS = (0.01, 0.05, 0.10, 0.90, 0.95, 0.99)
+# Methods scaled in --var-scale-mode manual (uncond_hist is the calibrated
+# control and is never touched; the kernel baselines are degenerate by
+# bandwidth, not scale, so manual mode leaves them alone too).
+DEFAULT_SCALE_METHODS = ("solo_diff", "tc_diff")
+AUTO_SCALE_CLIP = (0.5, 8.0)   # guards against degenerate-baseline blowups
 
 
-def realized_unwinsorized(prep: PreparedData, ticker: str) -> tuple[np.ndarray, np.ndarray]:
-    """Test-set changes standardized with train stats, tails NOT clipped."""
-    r_test = prep.changes[ticker][prep.test_idx[ticker]].values
+def realized_unwinsorized(prep: PreparedData, ticker: str,
+                          split: str = "test") -> tuple[np.ndarray, np.ndarray]:
+    """Split changes standardized with train stats, tails NOT clipped."""
+    idx = prep.test_idx[ticker] if split == "test" else prep.train_idx[ticker]
+    r = prep.changes[ticker][idx].values
     pp = prep.preprocess[ticker]
-    realized = (r_test - pp["mu"]) / pp["sigma"]
-    valid = prep.masks[ticker][prep.test_idx[ticker]] & np.isfinite(realized)
+    realized = (r - pp["mu"]) / pp["sigma"]
+    valid = prep.masks[ticker][idx] & np.isfinite(realized)
     return np.nan_to_num(realized, nan=0.0), valid
 
 
@@ -87,47 +103,100 @@ def _tiled_sample(sample_fn, cond: np.ndarray, n_samples: int, seed: int,
 
 
 def build_ensembles(prep: PreparedData, ticker: str, methods: list[str],
-                    models: dict, n_samples: int, seed: int,
-                    batch_rows: int) -> dict[str, np.ndarray]:
-    """Per-method predictive ensembles of shape (n_test, n_samples, n_factors)."""
-    cond_te = prep.cond_ewma_test[ticker]
-    s0, s1 = prep.test_offsets[ticker]
+                    models: dict, n_samples: int, seed: int, batch_rows: int,
+                    split: str = "test",
+                    sub_idx: np.ndarray | None = None) -> dict[str, np.ndarray]:
+    """Per-method predictive ensembles of shape (n_rows, n_samples, n_factors).
+
+    split="test" (default) builds the test-set ensembles used for scoring.
+    split="train" builds train-set ensembles, used only by auto var-scale
+    estimation; pass sub_idx to subsample conditioning rows and bound cost.
+    """
+    if split == "test":
+        cond = prep.cond_ewma_test[ticker]
+        s0, s1 = prep.test_offsets[ticker]
+        tc_cond_all = prep.tc_cond_ewma_test[s0:s1]
+        tc_ids_all = prep.ticker_ids_test[s0:s1]
+    else:
+        cond = prep.cond_ewma_train[ticker]
+        s0, s1 = prep.train_offsets[ticker]
+        tc_cond_all = prep.tc_cond_ewma_train[s0:s1]
+        tc_ids_all = prep.ticker_ids_train[s0:s1]
+    if sub_idx is not None:
+        cond = cond[sub_idx]
+        tc_cond_all = tc_cond_all[sub_idx]
+        tc_ids_all = tc_ids_all[sub_idx]
     ens = {}
 
     if "solo_diff" in methods:
         solo = models["solo_diff"][ticker]
         ens["solo_diff"] = _tiled_sample(
             lambda c, seed: solo.sample(c.astype(np.float32), seed=seed),
-            cond_te, n_samples, seed, batch_rows)
+            cond, n_samples, seed, batch_rows)
 
     if "tc_diff" in methods:
         tc = models["tc_diff"]
-        tc_cond = prep.tc_cond_ewma_test[s0:s1]
-        tc_ids = prep.ticker_ids_test[s0:s1]
         # Tile ids alongside cond explicitly (cond rows and ids must align).
-        tiled_ids = np.repeat(tc_ids, n_samples, axis=0)
-        tiled_cond = np.repeat(tc_cond, n_samples, axis=0)
+        tiled_ids = np.repeat(tc_ids_all, n_samples, axis=0)
+        tiled_cond = np.repeat(tc_cond_all, n_samples, axis=0)
         chunks = []
         for s in range(0, len(tiled_cond), batch_rows):
             chunks.append(tc.sample(tiled_cond[s:s + batch_rows].astype(np.float32),
                                     tiled_ids[s:s + batch_rows], seed=seed + s))
-        ens["tc_diff"] = np.vstack(chunks).reshape(len(tc_cond), n_samples, -1)
+        ens["tc_diff"] = np.vstack(chunks).reshape(len(tc_cond_all), n_samples, -1)
 
     if "solo_nw" in methods:
         nw = models["solo_nw"][ticker]
-        ens["solo_nw"] = _tiled_sample(nw.sample, cond_te, n_samples, seed, batch_rows)
+        ens["solo_nw"] = _tiled_sample(nw.sample, cond, n_samples, seed, batch_rows)
 
     if "t_copula" in methods:
         cop = models["t_copula"][ticker]
-        ens["t_copula"] = _tiled_sample(cop.sample, cond_te, n_samples, seed, batch_rows)
+        ens["t_copula"] = _tiled_sample(cop.sample, cond, n_samples, seed, batch_rows)
 
     if "uncond_hist" in methods:
         X_tr = prep.std_train[ticker]
         rng = np.random.default_rng(seed)
-        idx = rng.integers(0, len(X_tr), size=(len(cond_te), n_samples))
+        idx = rng.integers(0, len(X_tr), size=(len(cond), n_samples))
         ens["uncond_hist"] = X_tr[idx]
 
     return ens
+
+
+def estimate_auto_scales(prep: PreparedData, methods: list[str], models: dict,
+                         n_samples: int, seed: int, batch_rows: int,
+                         n_sub: int, verbose: bool) -> dict[str, float]:
+    """Per-method variance-inflation factors estimated on TRAIN (no test leakage).
+
+    Builds subsampled train ensembles, pools the standardized residual
+    z = (realized - ensemble_mean)/ensemble_std across tickers and factors, and
+    takes std(z) as the factor that calibrates the spread. Clipped to
+    AUTO_SCALE_CLIP so degenerate kernel baselines (z-std in the hundreds) don't
+    produce absurd inflation.
+    """
+    if verbose:
+        print(f"Estimating auto var-scales on train (<= {n_sub} rows/ticker)...")
+    z_pool: dict[str, list] = {m: [] for m in methods}
+    for ticker in prep.tickers:
+        realized, valid = realized_unwinsorized(prep, ticker, split="train")
+        n = len(realized)
+        rng = np.random.default_rng(seed + 1)
+        sub = np.sort(rng.choice(n, size=min(n_sub, n), replace=False))
+        ens = build_ensembles(prep, ticker, methods, models, n_samples, seed,
+                              batch_rows, split="train", sub_idx=sub)
+        r_sub, v_sub = realized[sub], valid[sub]
+        for m, samples in ens.items():
+            for fi in range(samples.shape[2]):
+                sf = samples[:, :, fi]
+                mm, sd = sf.mean(axis=1), sf.std(axis=1)
+                z = (r_sub[:, fi] - mm) / np.where(sd < 1e-12, np.nan, sd)
+                z = z[v_sub[:, fi]]
+                z_pool[m].append(z[np.isfinite(z)])
+    scales = {}
+    for m, zs in z_pool.items():
+        allz = np.concatenate(zs) if zs else np.array([])
+        s = float(np.std(allz)) if len(allz) else 1.0
+        scales[m] = float(np.clip(s, *AUTO_SCALE_CLIP))
+    return scales
 
 
 def main():
@@ -155,6 +224,23 @@ def main():
                              "baselines' conditional distributions degenerate "
                              "point masses; try 2-5 to compare them with "
                              "non-degenerate predictive distributions.")
+    parser.add_argument("--var-scale-mode", choices=["off", "auto", "manual"],
+                        default="off",
+                        help="Variance recalibration of the predictive spread. "
+                             "off: none (default, backward compatible). "
+                             "manual: inflate spread of --var-scale-methods by "
+                             "--var-scale. auto: per-method factor estimated on "
+                             "train (no test leakage), clipped to "
+                             f"{AUTO_SCALE_CLIP}.")
+    parser.add_argument("--var-scale", type=float, default=1.0,
+                        help="Manual inflation factor (used when "
+                             "--var-scale-mode manual). ~4 calibrates TC-Diff.")
+    parser.add_argument("--var-scale-methods", nargs="*",
+                        default=list(DEFAULT_SCALE_METHODS),
+                        help="Methods inflated in manual mode (uncond_hist is "
+                             "always left as the calibrated control).")
+    parser.add_argument("--var-scale-sub", type=int, default=1000,
+                        help="Max train rows/ticker sampled for auto estimation.")
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
     verbose = not args.quiet
@@ -191,6 +277,19 @@ def main():
             cop.bw = cop.bw * args.bw_scale
             models["t_copula"][ticker] = cop
 
+    # ---- Variance-recalibration factors ----
+    if args.var_scale_mode == "off":
+        scales = {m: 1.0 for m in args.methods}
+    elif args.var_scale_mode == "manual":
+        scales = {m: (args.var_scale if m in args.var_scale_methods else 1.0)
+                  for m in args.methods}
+    else:  # auto
+        scales = estimate_auto_scales(prep, args.methods, models, args.n_samples,
+                                      args.seed, args.batch_rows,
+                                      args.var_scale_sub, verbose)
+    print(f"\nVar-scale mode: {args.var_scale_mode} | applied factors: "
+          f"{ {m: round(s, 3) for m, s in scales.items()} }")
+
     # ---- Evaluate ----
     var_rows, mr_rows, series_rows, signal_rows = [], [], [], []
     # Pooled violation counts across tickers: (method, factor, tail, alpha)
@@ -206,6 +305,10 @@ def main():
         dates = prep.changes[ticker].index[prep.test_idx[ticker]]
 
         for method, samples in ens.items():
+            # Variance recalibration: rescale each day's spread about its mean
+            # before any metric, so VaR / ES / PIT / mean-reversion all read the
+            # same recalibrated predictive distribution.
+            samples = inflate_spread(samples, scales.get(method, 1.0))
             for fi, factor in enumerate(SVI_RISK_FACTOR_NAMES):
                 sf = samples[:, :, fi]
                 rf = realized[:, fi]
@@ -273,6 +376,8 @@ def main():
         "epochs_solo": args.epochs_solo, "epochs_pooled": args.epochs_pooled,
         "methods": args.methods, "tickers": args.tickers,
         "bw_scale": args.bw_scale,
+        "var_scale_mode": args.var_scale_mode,
+        "var_scales": {m: round(s, 4) for m, s in scales.items()},
     }, indent=2))
 
     # ---- Console summary ----
