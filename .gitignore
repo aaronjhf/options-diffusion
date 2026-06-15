@@ -30,3 +30,10 @@ dist/
 
 # Cache symlink (points outside repo)
 cache
+
+# Track committed experiment results: override the *.parquet / *.png / *.npy
+# ignores above for the results/ tree only. cache/ stays ignored (a file under
+# an ignored directory cannot be re-included), so proprietary data is unaffected.
+!results/**/*.parquet
+!results/**/*.png
+!results/**/*.npy
