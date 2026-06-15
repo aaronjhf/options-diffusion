@@ -90,12 +90,21 @@ def _ewma(arr: np.ndarray, alpha: float) -> np.ndarray:
 
 
 def _build_vix_ewma_cond(vix_all: np.ndarray) -> np.ndarray:
-    """[VIX_level, EWMA_short(log-diff), EWMA_long(log-diff)] same-day, no lag."""
+    """[VIX_level, EWMA_short(log-diff), EWMA_long(log-diff)], LAGGED by 1 day.
+
+    Row t conditions on VIX information available through day t-1 only, matching
+    the factor EWMAs below. The previous same-day version leaked the
+    contemporaneous VIX level and (with alpha=0.99) essentially today's VIX
+    change into the conditioning for the day-t risk-factor change — look-ahead
+    bias, since VIX and the equity-vol factors co-move within the same day.
+    Row 0 repeats its own value (no t-1 exists); a single boundary row.
+    """
     log_vix = np.log(np.maximum(vix_all, 1e-10))
     ldiff1 = np.concatenate([[0.0], np.diff(log_vix)])
-    return np.column_stack([
+    cols = np.column_stack([
         vix_all, _ewma(ldiff1, EWMA_SHORT_ALPHA), _ewma(ldiff1, EWMA_LONG_ALPHA),
     ])
+    return np.vstack([cols[:1], cols[:-1]])
 
 
 def _build_factor_ewma_cond(X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

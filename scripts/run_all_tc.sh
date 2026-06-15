@@ -18,7 +18,7 @@
 #   nohup bash scripts/run_all_tc.sh > /dev/null 2>&1 &
 #
 # Knobs (env vars):
-#   N_SEEDS=5  N_BOOT=2000  N_SAMPLES=128  BW_SCALE=1.0  EPOCHS_POOLED=11000
+#   N_SEEDS=5  N_BOOT=2000  N_SAMPLES=128  BW_SCALE=3.0  EPOCHS_POOLED=11000
 #   VAR_SCALE_MODE=auto  VAR_SCALE=4
 #
 # VAR_SCALE_MODE recalibrates the predictive spread before the VaR/ES/mean-
@@ -31,10 +31,12 @@
 # means calibration held; S still ~2-4 means auto under-inflated (conditional
 # mean over-fit) and a retrain with more regularization is the real fix.
 #
-# BW_SCALE > 1 widens the NW / t-copula kernel bandwidths; at 1.0 their
-# conditional distributions are near point masses (see run_risk_analysis.py
-# --help), which is faithful to the baselines as published but makes their
-# VaR numbers look terrible. Run with e.g. BW_SCALE=3 for a second opinion.
+# BW_SCALE widens the NW / t-copula kernel bandwidths. At 1.0 the 19-dim
+# product kernel collapses onto a single training row, so those baselines'
+# conditional distributions degenerate to near point masses (see
+# run_risk_analysis.py --help) and their VaR/metrics are meaningless. Default
+# is now 3.0 to give non-degenerate baselines; set BW_SCALE=1.0 to reproduce
+# the collapsed, as-published behavior.
 #
 # run_experiment.py checkpoints per-seed parquets, so if the box dies you can
 # re-run this script and it resumes where it left off.
@@ -49,7 +51,7 @@ cd "$(dirname "$0")/.."
 N_SEEDS="${N_SEEDS:-5}"
 N_BOOT="${N_BOOT:-2000}"
 N_SAMPLES="${N_SAMPLES:-128}"
-BW_SCALE="${BW_SCALE:-1.0}"
+BW_SCALE="${BW_SCALE:-3.0}"
 EPOCHS_POOLED="${EPOCHS_POOLED:-11000}"
 VAR_SCALE_MODE="${VAR_SCALE_MODE:-auto}"
 VAR_SCALE="${VAR_SCALE:-4}"

@@ -108,7 +108,9 @@ mean +/- std figures shows which source dominates.
 
 All four use the same 19-dim conditioning: [VIX_level, VIX_ewma_short,
 VIX_ewma_long] + short + long EWMAs of the 8 standardized factor changes.
-Factor EWMAs are lagged by one day to avoid leaking the target.
+Both the VIX block and the factor EWMAs are lagged by one day, so row t
+conditions only on information available through t-1 — no same-day (look-ahead)
+information about the day-t target.
 
 ## Configuration
 
