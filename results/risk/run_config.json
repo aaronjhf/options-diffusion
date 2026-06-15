@@ -1,0 +1,29 @@
+{
+  "seed": 0,
+  "n_samples": 128,
+  "epochs_solo": 6000,
+  "epochs_pooled": 11000,
+  "methods": [
+    "tc_diff",
+    "solo_nw",
+    "t_copula",
+    "uncond_hist"
+  ],
+  "tickers": [
+    "MU",
+    "PLTR",
+    "HOOD",
+    "MSFT",
+    "GOOG",
+    "AMZN",
+    "META"
+  ],
+  "bw_scale": 1.0,
+  "var_scale_mode": "auto",
+  "var_scales": {
+    "tc_diff": 2.9445,
+    "solo_nw": 2.6119,
+    "t_copula": 8.0,
+    "uncond_hist": 1.1619
+  }
+}

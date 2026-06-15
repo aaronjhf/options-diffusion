@@ -1,0 +1,617 @@
+Logging to results/logs/run_all_tc_20260614_210816.log
+torch 2.12.0+cu130 | device: NVIDIA GeForce RTX 3090
+Config: N_SEEDS=5 N_BOOT=2000 N_SAMPLES=128 BW_SCALE=1.0 EPOCHS_POOLED=11000 VAR_SCALE_MODE=auto VAR_SCALE=4
+
+===== [1/5] verify data cache =====
+Cache OK — all 7 risk-factor parquets present in /workspace/options-diffusion/cache.
+
+===== [2/5] cross-seed experiment (tc_diff solo_nw t_copula) =====
+Device: cuda
+Tickers: ['MU', 'PLTR', 'HOOD', 'MSFT', 'GOOG', 'AMZN', 'META']
+X_train: (5537, 8), X_test: (1400, 8)
+Split: 2025-07-22 -> gap end 2025-08-01
+
+Seeds: [0, 1, 2, 3, 4]
+Methods: ['tc_diff', 'solo_nw', 't_copula']
+Epochs: solo=6000, pooled=11000
+Out dir: /workspace/options-diffusion/results/experiment
+
+  [seed 0] training pooled ticker-conditioned diffusion...
+  epoch   500/11000  loss=0.304225  lr=3.98e-04  5.4 ep/s  ETA 32.4 min
+  epoch  1000/11000  loss=0.257873  lr=3.92e-04  4.7 ep/s  ETA 35.2 min
+  epoch  1500/11000  loss=0.227308  lr=3.82e-04  4.6 ep/s  ETA 34.7 min
+  epoch  2000/11000  loss=0.200452  lr=3.69e-04  4.5 ep/s  ETA 33.3 min
+  epoch  2500/11000  loss=0.176031  lr=3.52e-04  4.4 ep/s  ETA 31.9 min
+  epoch  3000/11000  loss=0.169325  lr=3.33e-04  4.4 ep/s  ETA 30.1 min
+  epoch  3500/11000  loss=0.159877  lr=3.10e-04  4.4 ep/s  ETA 28.4 min
+  epoch  4000/11000  loss=0.147266  lr=2.86e-04  4.4 ep/s  ETA 26.7 min
+  epoch  4500/11000  loss=0.147652  lr=2.60e-04  4.4 ep/s  ETA 24.8 min
+  epoch  5000/11000  loss=0.137978  lr=2.33e-04  4.3 ep/s  ETA 23.0 min
+  epoch  5500/11000  loss=0.136777  lr=2.05e-04  4.3 ep/s  ETA 21.2 min
+  epoch  6000/11000  loss=0.125029  lr=1.77e-04  4.3 ep/s  ETA 19.3 min
+  epoch  6500/11000  loss=0.125711  lr=1.50e-04  4.3 ep/s  ETA 17.4 min
+  epoch  7000/11000  loss=0.123949  lr=1.24e-04  4.3 ep/s  ETA 15.5 min
+  epoch  7500/11000  loss=0.127076  lr=9.96e-05  4.3 ep/s  ETA 13.6 min
+  epoch  8000/11000  loss=0.125967  lr=7.73e-05  4.3 ep/s  ETA 11.7 min
+  epoch  8500/11000  loss=0.120043  lr=5.76e-05  4.3 ep/s  ETA 9.7 min
+  epoch  9000/11000  loss=0.122543  lr=4.10e-05  4.3 ep/s  ETA 7.8 min
+  epoch  9500/11000  loss=0.117266  lr=2.76e-05  4.3 ep/s  ETA 5.8 min
+  epoch 10000/11000  loss=0.116195  lr=1.79e-05  4.3 ep/s  ETA 3.9 min
+  epoch 10500/11000  loss=0.121628  lr=1.20e-05  4.3 ep/s  ETA 2.0 min
+  epoch 11000/11000  loss=0.119845  lr=1.00e-05  4.3 ep/s  ETA 0.0 min
+  [seed 0] pooled done in 43.0 min
+  [seed 0] ticker 1/7: MU
+  [seed 0] ticker 2/7: PLTR
+  [seed 0] ticker 3/7: HOOD
+  [seed 0] ticker 4/7: MSFT
+  [seed 0] ticker 5/7: GOOG
+  [seed 0] ticker 6/7: AMZN
+  [seed 0] ticker 7/7: META
+  [seed 0] complete in 43.2 min
+  [seed 1] training pooled ticker-conditioned diffusion...
+  epoch   500/11000  loss=0.307830  lr=3.98e-04  4.2 ep/s  ETA 41.9 min
+  epoch  1000/11000  loss=0.264185  lr=3.92e-04  4.2 ep/s  ETA 39.9 min
+  epoch  1500/11000  loss=0.228511  lr=3.82e-04  4.2 ep/s  ETA 38.1 min
+  epoch  2000/11000  loss=0.200144  lr=3.69e-04  4.2 ep/s  ETA 36.0 min
+  epoch  2500/11000  loss=0.181608  lr=3.52e-04  4.2 ep/s  ETA 33.9 min
+  epoch  3000/11000  loss=0.168590  lr=3.33e-04  4.2 ep/s  ETA 31.6 min
+  epoch  3500/11000  loss=0.157388  lr=3.10e-04  4.2 ep/s  ETA 29.7 min
+  epoch  4000/11000  loss=0.147934  lr=2.86e-04  4.2 ep/s  ETA 27.7 min
+  epoch  4500/11000  loss=0.145820  lr=2.60e-04  4.2 ep/s  ETA 25.7 min
+  epoch  5000/11000  loss=0.144040  lr=2.33e-04  4.2 ep/s  ETA 23.8 min
+  epoch  5500/11000  loss=0.137331  lr=2.05e-04  4.2 ep/s  ETA 21.7 min
+  epoch  6000/11000  loss=0.134355  lr=1.77e-04  4.2 ep/s  ETA 19.7 min
+  epoch  6500/11000  loss=0.126365  lr=1.50e-04  4.2 ep/s  ETA 17.7 min
+  epoch  7000/11000  loss=0.127970  lr=1.24e-04  4.2 ep/s  ETA 15.7 min
+  epoch  7500/11000  loss=0.125311  lr=9.96e-05  4.2 ep/s  ETA 13.8 min
+  epoch  8000/11000  loss=0.123420  lr=7.73e-05  4.2 ep/s  ETA 11.8 min
+  epoch  8500/11000  loss=0.118416  lr=5.76e-05  4.2 ep/s  ETA 9.9 min
+  epoch  9000/11000  loss=0.118883  lr=4.10e-05  4.2 ep/s  ETA 7.9 min
+  epoch  9500/11000  loss=0.122473  lr=2.76e-05  4.2 ep/s  ETA 5.9 min
+  epoch 10000/11000  loss=0.118372  lr=1.79e-05  4.2 ep/s  ETA 3.9 min
+  epoch 10500/11000  loss=0.113329  lr=1.20e-05  4.2 ep/s  ETA 2.0 min
+  epoch 11000/11000  loss=0.110601  lr=1.00e-05  4.2 ep/s  ETA 0.0 min
+  [seed 1] pooled done in 43.4 min
+  [seed 1] ticker 1/7: MU
+  [seed 1] ticker 2/7: PLTR
+  [seed 1] ticker 3/7: HOOD
+  [seed 1] ticker 4/7: MSFT
+  [seed 1] ticker 5/7: GOOG
+  [seed 1] ticker 6/7: AMZN
+  [seed 1] ticker 7/7: META
+  [seed 1] complete in 43.6 min
+  [seed 2] training pooled ticker-conditioned diffusion...
+  epoch   500/11000  loss=0.304809  lr=3.98e-04  4.1 ep/s  ETA 42.2 min
+  epoch  1000/11000  loss=0.268582  lr=3.92e-04  4.2 ep/s  ETA 40.0 min
+  epoch  1500/11000  loss=0.230638  lr=3.82e-04  4.2 ep/s  ETA 38.0 min
+  epoch  2000/11000  loss=0.195747  lr=3.69e-04  4.2 ep/s  ETA 36.0 min
+  epoch  2500/11000  loss=0.176185  lr=3.52e-04  4.2 ep/s  ETA 34.0 min
+  epoch  3000/11000  loss=0.171858  lr=3.33e-04  4.2 ep/s  ETA 32.0 min
+  epoch  3500/11000  loss=0.155644  lr=3.10e-04  4.2 ep/s  ETA 30.0 min
+  epoch  4000/11000  loss=0.145977  lr=2.86e-04  4.2 ep/s  ETA 28.0 min
+  epoch  4500/11000  loss=0.140727  lr=2.60e-04  4.2 ep/s  ETA 25.9 min
+  epoch  5000/11000  loss=0.136487  lr=2.33e-04  4.2 ep/s  ETA 23.9 min
+  epoch  5500/11000  loss=0.132611  lr=2.05e-04  4.2 ep/s  ETA 21.9 min
+  epoch  6000/11000  loss=0.127797  lr=1.77e-04  4.2 ep/s  ETA 19.8 min
+  epoch  6500/11000  loss=0.126813  lr=1.50e-04  4.2 ep/s  ETA 17.8 min
+  epoch  7000/11000  loss=0.126605  lr=1.24e-04  4.2 ep/s  ETA 15.8 min
+  epoch  7500/11000  loss=0.122514  lr=9.96e-05  4.2 ep/s  ETA 13.9 min
+  epoch  8000/11000  loss=0.123752  lr=7.73e-05  4.2 ep/s  ETA 11.9 min
+  epoch  8500/11000  loss=0.119096  lr=5.76e-05  4.2 ep/s  ETA 9.9 min
+  epoch  9000/11000  loss=0.118810  lr=4.10e-05  4.2 ep/s  ETA 7.9 min
+  epoch  9500/11000  loss=0.120527  lr=2.76e-05  4.2 ep/s  ETA 5.9 min
+  epoch 10000/11000  loss=0.116771  lr=1.79e-05  4.2 ep/s  ETA 3.9 min
+  epoch 10500/11000  loss=0.113104  lr=1.20e-05  4.2 ep/s  ETA 2.0 min
+  epoch 11000/11000  loss=0.112598  lr=1.00e-05  4.2 ep/s  ETA 0.0 min
+  [seed 2] pooled done in 43.5 min
+  [seed 2] ticker 1/7: MU
+  [seed 2] ticker 2/7: PLTR
+  [seed 2] ticker 3/7: HOOD
+  [seed 2] ticker 4/7: MSFT
+  [seed 2] ticker 5/7: GOOG
+  [seed 2] ticker 6/7: AMZN
+  [seed 2] ticker 7/7: META
+  [seed 2] complete in 43.7 min
+  [seed 3] training pooled ticker-conditioned diffusion...
+  epoch   500/11000  loss=0.308325  lr=3.98e-04  4.2 ep/s  ETA 41.9 min
+  epoch  1000/11000  loss=0.258451  lr=3.92e-04  4.2 ep/s  ETA 40.0 min
+  epoch  1500/11000  loss=0.217632  lr=3.82e-04  4.2 ep/s  ETA 37.9 min
+  epoch  2000/11000  loss=0.195082  lr=3.69e-04  4.2 ep/s  ETA 35.9 min
+  epoch  2500/11000  loss=0.181172  lr=3.52e-04  4.2 ep/s  ETA 34.0 min
+  epoch  3000/11000  loss=0.160032  lr=3.33e-04  4.2 ep/s  ETA 32.0 min
+  epoch  3500/11000  loss=0.158072  lr=3.10e-04  4.2 ep/s  ETA 30.0 min
+  epoch  4000/11000  loss=0.142767  lr=2.86e-04  4.2 ep/s  ETA 28.0 min
+  epoch  4500/11000  loss=0.139770  lr=2.60e-04  4.2 ep/s  ETA 25.9 min
+  epoch  5000/11000  loss=0.140715  lr=2.33e-04  4.2 ep/s  ETA 23.9 min
+  epoch  5500/11000  loss=0.138354  lr=2.05e-04  4.2 ep/s  ETA 21.9 min
+  epoch  6000/11000  loss=0.132023  lr=1.77e-04  4.3 ep/s  ETA 19.3 min
+  epoch  6500/11000  loss=0.122893  lr=1.50e-04  4.3 ep/s  ETA 17.4 min
+  epoch  7000/11000  loss=0.119844  lr=1.24e-04  4.3 ep/s  ETA 15.5 min
+  epoch  7500/11000  loss=0.115354  lr=9.96e-05  4.3 ep/s  ETA 13.6 min
+  epoch  8000/11000  loss=0.123455  lr=7.73e-05  4.4 ep/s  ETA 11.5 min
+  epoch  8500/11000  loss=0.119463  lr=5.76e-05  4.3 ep/s  ETA 9.6 min
+  epoch  9000/11000  loss=0.119687  lr=4.10e-05  4.3 ep/s  ETA 7.7 min
+  epoch  9500/11000  loss=0.117144  lr=2.76e-05  4.3 ep/s  ETA 5.8 min
+  epoch 10000/11000  loss=0.115000  lr=1.79e-05  4.3 ep/s  ETA 3.9 min
+  epoch 10500/11000  loss=0.114250  lr=1.20e-05  4.3 ep/s  ETA 1.9 min
+  epoch 11000/11000  loss=0.111763  lr=1.00e-05  4.3 ep/s  ETA 0.0 min
+  [seed 3] pooled done in 42.6 min
+  [seed 3] ticker 1/7: MU
+  [seed 3] ticker 2/7: PLTR
+  [seed 3] ticker 3/7: HOOD
+  [seed 3] ticker 4/7: MSFT
+  [seed 3] ticker 5/7: GOOG
+  [seed 3] ticker 6/7: AMZN
+  [seed 3] ticker 7/7: META
+  [seed 3] complete in 42.8 min
+  [seed 4] training pooled ticker-conditioned diffusion...
+  epoch   500/11000  loss=0.302292  lr=3.98e-04  4.2 ep/s  ETA 42.0 min
+  epoch  1000/11000  loss=0.264389  lr=3.92e-04  4.2 ep/s  ETA 40.0 min
+  epoch  1500/11000  loss=0.225618  lr=3.82e-04  4.2 ep/s  ETA 38.1 min
+  epoch  2000/11000  loss=0.196202  lr=3.69e-04  4.2 ep/s  ETA 35.8 min
+  epoch  2500/11000  loss=0.177389  lr=3.52e-04  4.2 ep/s  ETA 33.9 min
+  epoch  3000/11000  loss=0.165868  lr=3.33e-04  4.2 ep/s  ETA 31.6 min
+  epoch  3500/11000  loss=0.151604  lr=3.10e-04  4.2 ep/s  ETA 29.7 min
+  epoch  4000/11000  loss=0.150070  lr=2.86e-04  4.2 ep/s  ETA 27.7 min
+  epoch  4500/11000  loss=0.141585  lr=2.60e-04  4.2 ep/s  ETA 25.8 min
+  epoch  5000/11000  loss=0.134721  lr=2.33e-04  4.2 ep/s  ETA 23.8 min
+  epoch  5500/11000  loss=0.133919  lr=2.05e-04  4.2 ep/s  ETA 21.9 min
+  epoch  6000/11000  loss=0.129792  lr=1.77e-04  4.2 ep/s  ETA 19.9 min
+  epoch  6500/11000  loss=0.123909  lr=1.50e-04  4.2 ep/s  ETA 17.9 min
+  epoch  7000/11000  loss=0.119311  lr=1.24e-04  4.2 ep/s  ETA 15.9 min
+  epoch  7500/11000  loss=0.123233  lr=9.96e-05  4.2 ep/s  ETA 13.9 min
+  epoch  8000/11000  loss=0.120128  lr=7.73e-05  4.2 ep/s  ETA 11.9 min
+  epoch  8500/11000  loss=0.119572  lr=5.76e-05  4.2 ep/s  ETA 10.0 min
+  epoch  9000/11000  loss=0.114483  lr=4.10e-05  4.2 ep/s  ETA 8.0 min
+  epoch  9500/11000  loss=0.113400  lr=2.76e-05  4.2 ep/s  ETA 6.0 min
+  epoch 10000/11000  loss=0.115535  lr=1.79e-05  4.2 ep/s  ETA 4.0 min
+  epoch 10500/11000  loss=0.115345  lr=1.20e-05  4.2 ep/s  ETA 2.0 min
+  epoch 11000/11000  loss=0.113928  lr=1.00e-05  4.2 ep/s  ETA 0.0 min
+  [seed 4] pooled done in 43.8 min
+  [seed 4] ticker 1/7: MU
+  [seed 4] ticker 2/7: PLTR
+  [seed 4] ticker 3/7: HOOD
+  [seed 4] ticker 4/7: MSFT
+  [seed 4] ticker 5/7: GOOG
+  [seed 4] ticker 6/7: AMZN
+  [seed 4] ticker 7/7: META
+  [seed 4] complete in 44.0 min
+
+================================================================================
+PER-TICKER SUMMARY (mean +/- std across seeds)
+================================================================================
+ticker   method   metric      mean      std  count
+  AMZN  solo_nw CorrDist  1.063905 0.085348      5
+  AMZN  solo_nw   Energy  0.022811 0.001941      5
+  AMZN  solo_nw  Frechet  0.323770 0.014020      5
+  AMZN  solo_nw   KS_max  0.114000 0.004183      5
+  AMZN  solo_nw     MMD2 -0.001239 0.000348      5
+  AMZN  solo_nw      SWD  0.095078 0.002919      5
+  AMZN t_copula CorrDist  1.033110 0.022397      5
+  AMZN t_copula   Energy  0.021742 0.001965      5
+  AMZN t_copula  Frechet  0.189408 0.013281      5
+  AMZN t_copula   KS_max  0.110000 0.010607      5
+  AMZN t_copula     MMD2 -0.001393 0.000484      5
+  AMZN t_copula      SWD  0.092302 0.003340      5
+  AMZN  tc_diff CorrDist  0.587212 0.194878      5
+  AMZN  tc_diff   Energy  0.029193 0.007335      5
+  AMZN  tc_diff  Frechet  0.140090 0.032609      5
+  AMZN  tc_diff   KS_max  0.133000 0.023611      5
+  AMZN  tc_diff     MMD2  0.000626 0.001665      5
+  AMZN  tc_diff      SWD  0.103521 0.009715      5
+  GOOG  solo_nw CorrDist  0.938140 0.073704      5
+  GOOG  solo_nw   Energy  0.023064 0.001283      5
+  GOOG  solo_nw  Frechet  0.314012 0.023294      5
+  GOOG  solo_nw   KS_max  0.108000 0.008367      5
+  GOOG  solo_nw     MMD2 -0.001206 0.000435      5
+  GOOG  solo_nw      SWD  0.095869 0.002897      5
+  GOOG t_copula CorrDist  0.918205 0.073169      5
+  GOOG t_copula   Energy  0.022704 0.000657      5
+  GOOG t_copula  Frechet  0.222148 0.016873      5
+  GOOG t_copula   KS_max  0.108000 0.010368      5
+  GOOG t_copula     MMD2 -0.001127 0.000258      5
+  GOOG t_copula      SWD  0.095926 0.001529      5
+  GOOG  tc_diff CorrDist  1.043610 0.204652      5
+  GOOG  tc_diff   Energy  0.023257 0.001907      5
+  GOOG  tc_diff  Frechet  0.192536 0.069130      5
+  GOOG  tc_diff   KS_max  0.100000 0.010607      5
+  GOOG  tc_diff     MMD2 -0.000399 0.000227      5
+  GOOG  tc_diff      SWD  0.094662 0.004063      5
+  HOOD  solo_nw CorrDist  1.274392 0.072252      5
+  HOOD  solo_nw   Energy  0.034535 0.002688      5
+  HOOD  solo_nw  Frechet  0.407203 0.030020      5
+  HOOD  solo_nw   KS_max  0.134000 0.010840      5
+  HOOD  solo_nw     MMD2  0.001686 0.000549      5
+  HOOD  solo_nw      SWD  0.118135 0.004009      5
+  HOOD t_copula CorrDist  1.229054 0.035380      5
+  HOOD t_copula   Energy  0.035464 0.000765      5
+  HOOD t_copula  Frechet  0.411340 0.015440      5
+  HOOD t_copula   KS_max  0.129000 0.005477      5
+  HOOD t_copula     MMD2  0.002570 0.000285      5
+  HOOD t_copula      SWD  0.121948 0.001916      5
+  HOOD  tc_diff CorrDist  0.889327 0.167578      5
+  HOOD  tc_diff   Energy  0.024771 0.002602      5
+  HOOD  tc_diff  Frechet  0.179316 0.076209      5
+  HOOD  tc_diff   KS_max  0.116000 0.014318      5
+  HOOD  tc_diff     MMD2  0.000818 0.000825      5
+  HOOD  tc_diff      SWD  0.089383 0.004381      5
+  META  solo_nw CorrDist  0.828859 0.033355      5
+  META  solo_nw   Energy  0.033805 0.001892      5
+  META  solo_nw  Frechet  0.429013 0.017794      5
+  META  solo_nw   KS_max  0.118000 0.006708      5
+  META  solo_nw     MMD2  0.001311 0.000603      5
+  META  solo_nw      SWD  0.125195 0.001959      5
+  META t_copula CorrDist  0.866945 0.054535      5
+  META t_copula   Energy  0.033565 0.001374      5
+  META t_copula  Frechet  0.319311 0.025942      5
+  META t_copula   KS_max  0.125000 0.005000      5
+  META t_copula     MMD2  0.001393 0.000369      5
+  META t_copula      SWD  0.125433 0.002919      5
+  META  tc_diff CorrDist  0.580016 0.095181      5
+  META  tc_diff   Energy  0.030258 0.003494      5
+  META  tc_diff  Frechet  0.215544 0.026960      5
+  META  tc_diff   KS_max  0.122000 0.014832      5
+  META  tc_diff     MMD2  0.000684 0.001275      5
+  META  tc_diff      SWD  0.113098 0.007033      5
+  MSFT  solo_nw CorrDist  0.868658 0.062811      5
+  MSFT  solo_nw   Energy  0.026571 0.002562      5
+  MSFT  solo_nw  Frechet  0.246630 0.012966      5
+  MSFT  solo_nw   KS_max  0.142000 0.007583      5
+  MSFT  solo_nw     MMD2 -0.000348 0.000678      5
+  MSFT  solo_nw      SWD  0.103169 0.004529      5
+  MSFT t_copula CorrDist  0.790290 0.082709      5
+  MSFT t_copula   Energy  0.025075 0.002823      5
+  MSFT t_copula  Frechet  0.141906 0.010258      5
+  MSFT t_copula   KS_max  0.124000 0.010840      5
+  MSFT t_copula     MMD2 -0.000415 0.000655      5
+  MSFT t_copula      SWD  0.101527 0.004859      5
+  MSFT  tc_diff CorrDist  0.569794 0.113290      5
+  MSFT  tc_diff   Energy  0.029678 0.006052      5
+  MSFT  tc_diff  Frechet  0.169867 0.041759      5
+  MSFT  tc_diff   KS_max  0.120000 0.016956      5
+  MSFT  tc_diff     MMD2  0.000968 0.001233      5
+  MSFT  tc_diff      SWD  0.098247 0.009806      5
+    MU  solo_nw CorrDist  1.123919 0.045669      5
+    MU  solo_nw   Energy  0.058670 0.003368      5
+    MU  solo_nw  Frechet  0.418564 0.026567      5
+    MU  solo_nw   KS_max  0.192000 0.009747      5
+    MU  solo_nw     MMD2  0.007130 0.000759      5
+    MU  solo_nw      SWD  0.137834 0.004390      5
+    MU t_copula CorrDist  0.975069 0.026076      5
+    MU t_copula   Energy  0.061666 0.004198      5
+    MU t_copula  Frechet  0.324669 0.019290      5
+    MU t_copula   KS_max  0.171000 0.008216      5
+    MU t_copula     MMD2  0.007981 0.000881      5
+    MU t_copula      SWD  0.144119 0.004167      5
+    MU  tc_diff CorrDist  1.246026 0.056362      5
+    MU  tc_diff   Energy  0.056089 0.005472      5
+    MU  tc_diff  Frechet  0.270957 0.026012      5
+    MU  tc_diff   KS_max  0.183000 0.010368      5
+    MU  tc_diff     MMD2  0.007738 0.001101      5
+    MU  tc_diff      SWD  0.128701 0.006673      5
+  PLTR  solo_nw CorrDist  0.989124 0.067600      5
+  PLTR  solo_nw   Energy  0.039695 0.001598      5
+  PLTR  solo_nw  Frechet  0.258718 0.011334      5
+  PLTR  solo_nw   KS_max  0.165000 0.003536      5
+  PLTR  solo_nw     MMD2  0.002142 0.000498      5
+  PLTR  solo_nw      SWD  0.117379 0.001994      5
+  PLTR t_copula CorrDist  1.093446 0.076014      5
+  PLTR t_copula   Energy  0.038769 0.001419      5
+  PLTR t_copula  Frechet  0.258049 0.012140      5
+  PLTR t_copula   KS_max  0.161000 0.006519      5
+  PLTR t_copula     MMD2  0.002328 0.000350      5
+  PLTR t_copula      SWD  0.116529 0.001615      5
+  PLTR  tc_diff CorrDist  0.725379 0.149144      5
+  PLTR  tc_diff   Energy  0.036410 0.012899      5
+  PLTR  tc_diff  Frechet  0.187974 0.064403      5
+  PLTR  tc_diff   KS_max  0.128000 0.029069      5
+  PLTR  tc_diff     MMD2  0.002439 0.003261      5
+  PLTR  tc_diff      SWD  0.109261 0.017770      5
+
+================================================================================
+POOLED SUMMARY (mean +/- std across seeds x tickers)
+================================================================================
+  method   metric     mean      std  count
+ solo_nw CorrDist 1.012428 0.157113     35
+ solo_nw   Energy 0.034165 0.011946     35
+ solo_nw  Frechet 0.342559 0.073960     35
+ solo_nw   KS_max 0.139000 0.029401     35
+ solo_nw     MMD2 0.001354 0.002767     35
+ solo_nw      SWD 0.113237 0.015274     35
+t_copula CorrDist 0.986588 0.147894     35
+t_copula   Energy 0.034141 0.013147     35
+t_copula  Frechet 0.266690 0.087661     35
+t_copula   KS_max 0.132571 0.024082     35
+t_copula     MMD2 0.001619 0.003072     35
+t_copula      SWD 0.113969 0.017640     35
+ tc_diff CorrDist 0.805909 0.282442     35
+ tc_diff   Energy 0.032808 0.012052     35
+ tc_diff  Frechet 0.193755 0.060978     35
+ tc_diff   KS_max 0.128857 0.029558     35
+ tc_diff     MMD2 0.001839 0.002960     35
+ tc_diff      SWD 0.105268 0.015109     35
+
+===== [3/5] paired bootstrap (n_boot=2000) =====
+Device: cuda
+
+Training TC-Diffusion (train-seed=0, epochs=11000)...
+  epoch   500/11000  loss=0.304225  lr=3.98e-04  4.2 ep/s  ETA 41.7 min
+  epoch  1000/11000  loss=0.257873  lr=3.92e-04  4.2 ep/s  ETA 39.8 min
+  epoch  1500/11000  loss=0.227308  lr=3.82e-04  4.2 ep/s  ETA 37.6 min
+  epoch  2000/11000  loss=0.200452  lr=3.69e-04  4.2 ep/s  ETA 35.6 min
+  epoch  2500/11000  loss=0.176031  lr=3.52e-04  4.2 ep/s  ETA 33.7 min
+  epoch  3000/11000  loss=0.169325  lr=3.33e-04  4.3 ep/s  ETA 31.1 min
+  epoch  3500/11000  loss=0.159877  lr=3.10e-04  4.3 ep/s  ETA 29.2 min
+  epoch  4000/11000  loss=0.147266  lr=2.86e-04  4.3 ep/s  ETA 27.2 min
+  epoch  4500/11000  loss=0.147652  lr=2.60e-04  4.3 ep/s  ETA 25.3 min
+  epoch  5000/11000  loss=0.137978  lr=2.33e-04  4.3 ep/s  ETA 23.4 min
+  epoch  5500/11000  loss=0.136777  lr=2.05e-04  4.3 ep/s  ETA 21.5 min
+  epoch  6000/11000  loss=0.125029  lr=1.77e-04  4.3 ep/s  ETA 19.6 min
+  epoch  6500/11000  loss=0.125711  lr=1.50e-04  4.2 ep/s  ETA 17.6 min
+  epoch  7000/11000  loss=0.123949  lr=1.24e-04  4.2 ep/s  ETA 15.7 min
+  epoch  7500/11000  loss=0.127076  lr=9.96e-05  4.2 ep/s  ETA 13.7 min
+  epoch  8000/11000  loss=0.125967  lr=7.73e-05  4.2 ep/s  ETA 11.8 min
+  epoch  8500/11000  loss=0.120043  lr=5.76e-05  4.2 ep/s  ETA 9.8 min
+  epoch  9000/11000  loss=0.122543  lr=4.10e-05  4.2 ep/s  ETA 7.9 min
+  epoch  9500/11000  loss=0.117266  lr=2.76e-05  4.2 ep/s  ETA 5.9 min
+  epoch 10000/11000  loss=0.116195  lr=1.79e-05  4.2 ep/s  ETA 3.9 min
+  epoch 10500/11000  loss=0.121628  lr=1.20e-05  4.2 ep/s  ETA 2.0 min
+  epoch 11000/11000  loss=0.119845  lr=1.00e-05  4.2 ep/s  ETA 0.0 min
+Pre-generating cached test samples for bootstrap ...
+  MU: cached 200 samples x 3 methods
+  PLTR: cached 200 samples x 3 methods
+  HOOD: cached 200 samples x 3 methods
+  MSFT: cached 200 samples x 3 methods
+  GOOG: cached 200 samples x 3 methods
+  AMZN: cached 200 samples x 3 methods
+  META: cached 200 samples x 3 methods
+MU: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+PLTR: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+HOOD: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+MSFT: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+GOOG: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+AMZN: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+META: bootstrapping 2000 resamples of size 200 ...
+  done in 2.9 min
+
+================================================================================
+PAIRED BOOTSTRAP SUMMARY (negative diff = TC-Diff better)
+================================================================================
+ticker         comparison   metric      mean      std  win_rate  n_boot
+    MU       TC-Diff - NW      SWD -0.006090 0.020236    0.6235    2000
+    MU       TC-Diff - NW     MMD2  0.000770 0.004919    0.4330    2000
+    MU       TC-Diff - NW  Frechet -0.136441 0.118789    0.8810    2000
+    MU       TC-Diff - NW   Energy -0.001166 0.021855    0.5265    2000
+    MU       TC-Diff - NW CorrDist  0.090291 0.272488    0.3530    2000
+    MU TC-Diff - t-Copula      SWD -0.014824 0.021797    0.7540    2000
+    MU TC-Diff - t-Copula     MMD2 -0.000699 0.005505    0.5555    2000
+    MU TC-Diff - t-Copula  Frechet -0.085390 0.124682    0.7560    2000
+    MU TC-Diff - t-Copula   Energy -0.006472 0.024126    0.6215    2000
+    MU TC-Diff - t-Copula CorrDist  0.165025 0.283046    0.2695    2000
+  PLTR       TC-Diff - NW      SWD -0.012946 0.018443    0.7670    2000
+  PLTR       TC-Diff - NW     MMD2 -0.000417 0.002962    0.5575    2000
+  PLTR       TC-Diff - NW  Frechet -0.043078 0.198548    0.5890    2000
+  PLTR       TC-Diff - NW   Energy -0.010786 0.013294    0.8105    2000
+  PLTR       TC-Diff - NW CorrDist -0.275358 0.274507    0.8355    2000
+  PLTR TC-Diff - t-Copula      SWD -0.014342 0.019609    0.7760    2000
+  PLTR TC-Diff - t-Copula     MMD2 -0.001582 0.003175    0.6985    2000
+  PLTR TC-Diff - t-Copula  Frechet -0.046861 0.198826    0.5995    2000
+  PLTR TC-Diff - t-Copula   Energy -0.012727 0.014837    0.8295    2000
+  PLTR TC-Diff - t-Copula CorrDist -0.370171 0.277134    0.9060    2000
+  HOOD       TC-Diff - NW      SWD -0.024947 0.019824    0.8930    2000
+  HOOD       TC-Diff - NW     MMD2 -0.002917 0.003194    0.8350    2000
+  HOOD       TC-Diff - NW  Frechet -0.130824 0.209554    0.7505    2000
+  HOOD       TC-Diff - NW   Energy -0.014319 0.013859    0.8670    2000
+  HOOD       TC-Diff - NW CorrDist -0.252025 0.357271    0.7585    2000
+  HOOD TC-Diff - t-Copula      SWD -0.023672 0.019689    0.8905    2000
+  HOOD TC-Diff - t-Copula     MMD2 -0.003197 0.003102    0.8695    2000
+  HOOD TC-Diff - t-Copula  Frechet -0.089312 0.202142    0.6925    2000
+  HOOD TC-Diff - t-Copula   Energy -0.012764 0.013207    0.8580    2000
+  HOOD TC-Diff - t-Copula CorrDist -0.180740 0.339636    0.7085    2000
+  MSFT       TC-Diff - NW      SWD -0.010537 0.016915    0.7480    2000
+  MSFT       TC-Diff - NW     MMD2 -0.000008 0.002910    0.4955    2000
+  MSFT       TC-Diff - NW  Frechet -0.120070 0.098487    0.9005    2000
+  MSFT       TC-Diff - NW   Energy -0.001860 0.013384    0.5515    2000
+  MSFT       TC-Diff - NW CorrDist -0.299965 0.337926    0.8220    2000
+  MSFT TC-Diff - t-Copula      SWD -0.016336 0.019920    0.8015    2000
+  MSFT TC-Diff - t-Copula     MMD2 -0.000629 0.003362    0.5645    2000
+  MSFT TC-Diff - t-Copula  Frechet -0.042097 0.100001    0.6800    2000
+  MSFT TC-Diff - t-Copula   Energy -0.004940 0.015910    0.6255    2000
+  MSFT TC-Diff - t-Copula CorrDist -0.125419 0.327564    0.6370    2000
+  GOOG       TC-Diff - NW      SWD -0.009327 0.016339    0.7150    2000
+  GOOG       TC-Diff - NW     MMD2  0.001013 0.002620    0.3280    2000
+  GOOG       TC-Diff - NW  Frechet -0.203962 0.106174    0.9910    2000
+  GOOG       TC-Diff - NW   Energy -0.002391 0.012445    0.5580    2000
+  GOOG       TC-Diff - NW CorrDist -0.067224 0.268812    0.5660    2000
+  GOOG TC-Diff - t-Copula      SWD -0.011888 0.016127    0.7720    2000
+  GOOG TC-Diff - t-Copula     MMD2  0.000207 0.002663    0.4515    2000
+  GOOG TC-Diff - t-Copula  Frechet -0.134712 0.105460    0.9210    2000
+  GOOG TC-Diff - t-Copula   Energy -0.004515 0.011627    0.6525    2000
+  GOOG TC-Diff - t-Copula CorrDist -0.065423 0.246593    0.5840    2000
+  AMZN       TC-Diff - NW      SWD -0.005978 0.015288    0.6585    2000
+  AMZN       TC-Diff - NW     MMD2 -0.000893 0.002168    0.6685    2000
+  AMZN       TC-Diff - NW  Frechet -0.184099 0.129576    0.9315    2000
+  AMZN       TC-Diff - NW   Energy -0.004875 0.010614    0.6990    2000
+  AMZN       TC-Diff - NW CorrDist -0.252259 0.386587    0.7415    2000
+  AMZN TC-Diff - t-Copula      SWD -0.003353 0.016304    0.5795    2000
+  AMZN TC-Diff - t-Copula     MMD2 -0.000558 0.002346    0.5860    2000
+  AMZN TC-Diff - t-Copula  Frechet -0.038582 0.125821    0.6270    2000
+  AMZN TC-Diff - t-Copula   Energy -0.004540 0.011660    0.6685    2000
+  AMZN TC-Diff - t-Copula CorrDist -0.093196 0.393017    0.6030    2000
+  META       TC-Diff - NW      SWD -0.010367 0.019197    0.7030    2000
+  META       TC-Diff - NW     MMD2  0.000192 0.003180    0.4820    2000
+  META       TC-Diff - NW  Frechet -0.208078 0.175049    0.9125    2000
+  META       TC-Diff - NW   Energy -0.003551 0.013421    0.6100    2000
+  META       TC-Diff - NW CorrDist -0.358140 0.274666    0.9040    2000
+  META TC-Diff - t-Copula      SWD -0.008753 0.020358    0.6605    2000
+  META TC-Diff - t-Copula     MMD2  0.000471 0.003268    0.4370    2000
+  META TC-Diff - t-Copula  Frechet -0.082967 0.173126    0.6780    2000
+  META TC-Diff - t-Copula   Energy -0.001973 0.014275    0.5440    2000
+  META TC-Diff - t-Copula CorrDist -0.298272 0.279307    0.8560    2000
+
+===== [4/6] risk analysis (n_samples=128, bw_scale=1.0, var_scale_mode=auto) =====
+Device: cuda
+Tickers: ['MU', 'PLTR', 'HOOD', 'MSFT', 'GOOG', 'AMZN', 'META'] | test days/ticker: [200, 200, 200, 200, 200, 200, 200]
+Methods: ['tc_diff', 'solo_nw', 't_copula', 'uncond_hist'] | ensemble size: 128
+Training pooled TC-Diff (11000 epochs)...
+  epoch   500/11000  loss=0.304225  lr=3.98e-04  4.2 ep/s  ETA 41.9 min
+  epoch  1000/11000  loss=0.257873  lr=3.92e-04  4.2 ep/s  ETA 39.9 min
+  epoch  1500/11000  loss=0.227308  lr=3.82e-04  4.2 ep/s  ETA 37.9 min
+  epoch  2000/11000  loss=0.200452  lr=3.69e-04  4.2 ep/s  ETA 36.1 min
+  epoch  2500/11000  loss=0.176031  lr=3.52e-04  4.2 ep/s  ETA 34.1 min
+  epoch  3000/11000  loss=0.169325  lr=3.33e-04  4.2 ep/s  ETA 32.1 min
+  epoch  3500/11000  loss=0.159877  lr=3.10e-04  4.2 ep/s  ETA 30.1 min
+  epoch  4000/11000  loss=0.147266  lr=2.86e-04  4.2 ep/s  ETA 28.0 min
+  epoch  4500/11000  loss=0.147652  lr=2.60e-04  4.2 ep/s  ETA 26.0 min
+  epoch  5000/11000  loss=0.137978  lr=2.33e-04  4.2 ep/s  ETA 24.0 min
+  epoch  5500/11000  loss=0.136777  lr=2.05e-04  4.2 ep/s  ETA 22.0 min
+  epoch  6000/11000  loss=0.125029  lr=1.77e-04  4.2 ep/s  ETA 20.0 min
+  epoch  6500/11000  loss=0.125711  lr=1.50e-04  4.2 ep/s  ETA 18.0 min
+  epoch  7000/11000  loss=0.123949  lr=1.24e-04  4.2 ep/s  ETA 16.0 min
+  epoch  7500/11000  loss=0.127076  lr=9.96e-05  4.2 ep/s  ETA 14.0 min
+  epoch  8000/11000  loss=0.125967  lr=7.73e-05  4.2 ep/s  ETA 12.0 min
+  epoch  8500/11000  loss=0.120043  lr=5.76e-05  4.2 ep/s  ETA 10.0 min
+  epoch  9000/11000  loss=0.122543  lr=4.10e-05  4.2 ep/s  ETA 8.0 min
+  epoch  9500/11000  loss=0.117266  lr=2.76e-05  4.2 ep/s  ETA 6.0 min
+  epoch 10000/11000  loss=0.116195  lr=1.79e-05  4.2 ep/s  ETA 4.0 min
+  epoch 10500/11000  loss=0.121628  lr=1.20e-05  4.2 ep/s  ETA 2.0 min
+  epoch 11000/11000  loss=0.119845  lr=1.00e-05  4.2 ep/s  ETA 0.0 min
+Estimating auto var-scales on train (<= 1000 rows/ticker)...
+
+Var-scale mode: auto | applied factors: {'tc_diff': 2.944, 'solo_nw': 2.612, 't_copula': 8.0, 'uncond_hist': 1.162}
+
+[MU] drawing ensembles (128/day x 200 days)...
+[MU] done in 0.5 min
+
+[PLTR] drawing ensembles (128/day x 200 days)...
+[PLTR] done in 0.5 min
+
+[HOOD] drawing ensembles (128/day x 200 days)...
+[HOOD] done in 0.5 min
+
+[MSFT] drawing ensembles (128/day x 200 days)...
+[MSFT] done in 0.5 min
+
+[GOOG] drawing ensembles (128/day x 200 days)...
+[GOOG] done in 0.5 min
+
+[AMZN] drawing ensembles (128/day x 200 days)...
+[AMZN] done in 0.5 min
+
+[META] drawing ensembles (128/day x 200 days)...
+[META] done in 0.5 min
+
+========================================================================================
+VaR COVERAGE, POOLED ACROSS TICKERS+FACTORS (empirical violation rate vs nominal)
+========================================================================================
+tail          lower                   upper                
+alpha          0.01    0.05    0.10    0.01    0.05    0.10
+method                                                     
+solo_nw      0.3694  0.4032  0.4218  0.3812  0.4186  0.4335
+t_copula     0.3304  0.3700  0.3922  0.3514  0.3920  0.4144
+tc_diff      0.0491  0.1001  0.1484  0.0656  0.1151  0.1668
+uncond_hist  0.0036  0.0169  0.0432  0.0029  0.0203  0.0504
+
+EXPECTED SHORTFALL on violation days (realized vs model, 5% lower tail):
+             realized_es  model_es  n_viol
+method                                    
+solo_nw           -0.379     0.298  4516.0
+t_copula          -0.363    -0.061  4144.0
+tc_diff           -0.752    -0.611  1121.0
+uncond_hist       -2.480    -2.444   189.0
+
+Mean-reversion strategy, pooled across tickers x factors:
+     method  tau  n_signals  hit_rate  mean_pnl  model_dir_acc
+    solo_nw 0.80    10072.0  0.597399  0.186702       0.599881
+    solo_nw 0.90     9489.0  0.602382  0.196189       0.599958
+    solo_nw 0.95     9030.0  0.607309  0.206553       0.599336
+   t_copula 0.80     9642.0  0.590956  0.181161       0.594379
+   t_copula 0.90     8969.0  0.595607  0.190262       0.595719
+   t_copula 0.95     8363.0  0.601220  0.202037       0.594882
+    tc_diff 0.80     5454.0  0.678218  0.337464       0.701687
+    tc_diff 0.90     3399.0  0.716387  0.447482       0.724625
+    tc_diff 0.95     2141.0  0.740775  0.538319       0.744512
+uncond_hist 0.80     2978.0  0.755205  0.515805       0.486232
+uncond_hist 0.90      958.0  0.774530  0.726083       0.487474
+uncond_hist 0.95      315.0  0.723810  0.820736       0.453968
+
+Wrote parquets to /workspace/options-diffusion/results/risk. Run scripts/plot_risk_analysis.py for figures.
+
+===== [5/6] figures =====
+  wrote /workspace/options-diffusion/results/figures/cross_seed_pooled.png
+  wrote 7 per-ticker plots in /workspace/options-diffusion/results/figures
+  wrote 7 bootstrap plots in /workspace/options-diffusion/results/figures
+wrote figures to /workspace/options-diffusion/results/figures/risk
+
+===== [6/6] VaR-scale diagnostic =====
+
+series: results/risk/series.parquet  |  rows (valid): 44800  |  factor: ALL pooled
+
+==========================================================================================
+PER-METHOD DISPERSION  (z-std = std((realized-pred_mean)/spread) = inflation S needed)
+==========================================================================================
+method       realized_std predmean_std   spread implied_marg   z_std=S
+tc_diff             0.813        0.697    0.591        1.000     1.565
+solo_nw             0.813        0.782    0.172        0.895   138.671
+t_copula            0.813        0.793    0.548        1.584  3100.376
+uncond_hist         0.813        0.088    1.099        1.112     0.762
+
+==========================================================================================
+VaR COVERAGE vs INFLATION S   (target: lower/upper = nominal alpha)
+==========================================================================================
+
+-- tc_diff --   coverage-optimal S = 1.40  (|cov-nom| 0.0542 at S=1  ->  0.0096 at S=1.40)
+    S |  L.01  L.05  L.10   U.01  U.05  U.10
+ 1.00 | 0.049 0.100 0.148  0.066 0.115 0.167
+ 2.00 | 0.005 0.016 0.037  0.007 0.023 0.050
+ 3.00 | 0.001 0.004 0.010  0.001 0.005 0.014
+ 4.00 | 0.001 0.002 0.004  0.001 0.002 0.005
+ 5.00 | 0.000 0.001 0.002  0.000 0.001 0.002
+ 6.00 | 0.000 0.001 0.002  0.000 0.001 0.001
+ 1.40 | 0.018 0.048 0.085  0.027 0.063 0.102  <- optimal
+  nom | 0.010 0.050 0.100  0.010 0.050 0.100
+
+-- solo_nw --   coverage-optimal S = 8.00  (|cov-nom| 0.3513 at S=1  ->  0.3152 at S=8.00)
+    S |  L.01  L.05  L.10   U.01  U.05  U.10
+ 1.00 | 0.369 0.403 0.422  0.381 0.419 0.433
+ 2.00 | 0.346 0.384 0.404  0.362 0.404 0.421
+ 3.00 | 0.337 0.374 0.396  0.355 0.398 0.416
+ 4.00 | 0.332 0.370 0.392  0.350 0.395 0.414
+ 5.00 | 0.329 0.368 0.390  0.347 0.393 0.412
+ 6.00 | 0.326 0.366 0.388  0.345 0.391 0.410
+ 8.00 | 0.323 0.363 0.386  0.342 0.389 0.408  <- optimal
+  nom | 0.010 0.050 0.100  0.010 0.050 0.100
+
+-- t_copula --   coverage-optimal S = 8.00  (|cov-nom| 0.3217 at S=1  ->  0.2725 at S=8.00)
+    S |  L.01  L.05  L.10   U.01  U.05  U.10
+ 1.00 | 0.330 0.370 0.392  0.351 0.392 0.414
+ 2.00 | 0.315 0.356 0.380  0.336 0.379 0.404
+ 3.00 | 0.306 0.348 0.373  0.327 0.372 0.398
+ 4.00 | 0.296 0.340 0.367  0.321 0.367 0.394
+ 5.00 | 0.288 0.333 0.360  0.314 0.362 0.390
+ 6.00 | 0.280 0.327 0.355  0.310 0.357 0.387
+ 8.00 | 0.270 0.317 0.345  0.298 0.348 0.378  <- optimal
+  nom | 0.010 0.050 0.100  0.010 0.050 0.100
+
+-- uncond_hist --   coverage-optimal S = 0.70  (|cov-nom| 0.0304 at S=1  ->  0.0048 at S=0.70)
+    S |  L.01  L.05  L.10   U.01  U.05  U.10
+ 1.00 | 0.004 0.017 0.043  0.003 0.020 0.050
+ 2.00 | 0.000 0.002 0.006  0.000 0.002 0.005
+ 3.00 | 0.000 0.001 0.002  0.000 0.001 0.002
+ 4.00 | 0.000 0.000 0.001  0.000 0.000 0.001
+ 5.00 | 0.000 0.000 0.000  0.000 0.000 0.000
+ 6.00 | 0.000 0.000 0.000  0.000 0.000 0.000
+ 0.70 | 0.012 0.046 0.098  0.014 0.056 0.111  <- optimal
+  nom | 0.010 0.050 0.100  0.010 0.050 0.100
+
+Apply consistently (VaR+ES+PIT+mean-reversion) with:
+  python scripts/run_risk_analysis.py --var-scale-mode auto
+  python scripts/run_risk_analysis.py --var-scale-mode manual --var-scale <S>
+
+Done. Collect: results/experiment, results/bootstrap, results/risk, results/figures

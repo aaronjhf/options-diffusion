@@ -5,7 +5,6 @@ cache/
 .env
 
 # Experiment outputs
-results/
 checkpoints/
 runs/
 *.png
