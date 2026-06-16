@@ -18,11 +18,11 @@
     "AMZN",
     "META"
   ],
-  "bw_scale": 1.0,
+  "bw_scale": 3.0,
   "var_scale_mode": "auto",
   "var_scales": {
-    "tc_diff": 2.9445,
-    "solo_nw": 2.6119,
+    "tc_diff": 4.0948,
+    "solo_nw": 8.0,
     "t_copula": 8.0,
     "uncond_hist": 1.1619
   }
