@@ -116,3 +116,42 @@ information about the day-t target.
 
 Tweak hyperparameters in [options_diffusion/config.py](options_diffusion/config.py).
 The most-used knobs are also exposed as CLI flags on `run_experiment.py`.
+
+## Results
+
+The conditional diffusion model (conditioned both on ticker identity and lagged
+indicators) demonstrates capacity in excess of baselines. It is better
+calibrated, superior at forecasting mean reversion, and generally superior on
+distributional metrics such as Fréchet distance. It will be interesting to
+explore more rigorously whether ticker conditioning conferred benefits due to
+shared representation learning between the options considered, which produced a
+larger train and test set.
+
+**Calibration (VaR coverage).** After an honest, train-estimated variance
+recalibration, TC-Diff tracks the perfect-coverage diagonal most closely across
+both tails; the classical baselines run conservative and the unconditional
+control most so.
+
+![VaR coverage: empirical vs nominal violation rate by method](results/figures/risk/var_coverage.png)
+
+**Mean reversion (next-day direction).** TC-Diff's conditional mean predicts the
+direction of the next-day move best (rightmost panel), clearly above the
+conditioned baselines (~0.60) and the unconditional control (~0.49, a coin flip).
+
+![Mean-reversion skill vs predictive-quantile threshold](results/figures/risk/mr_hit_pnl.png)
+
+**Distributional distance (cross-seed, ±1 std).** TC-Diff attains the lowest
+Fréchet distance to the realized surface-change distribution.
+
+![Cross-seed distributional metrics, pooled across tickers](results/figures/cross_seed_pooled.png)
+
+The error bars are large on some of the distributional distance metrics, so I
+also performed paired-bootstrap resampling tests between TC-Diff and the
+baselines (2000 resamples of the test set, drawing the same indices for the real
+and generated samples each time and recomputing the metric difference). The
+example below (MSFT) shows the resulting distributions of TC-Diff minus each
+baseline; mass to the left of the dashed zero line favors TC-Diff, with the win
+rate annotated. Fréchet distance is the most consistent win across tickers
+(~79% / 64% vs NW / t-Copula pooled); the other metrics are more ticker-dependent.
+
+![Paired-bootstrap metric differences (example: MSFT)](results/figures/bootstrap_MSFT.png)
